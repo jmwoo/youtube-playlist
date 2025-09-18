@@ -53,12 +53,13 @@ class VideoSearcher:
                 response = request.execute()
                 
                 for item in response['items']:
+                    description = item['snippet']['description']
                     video_data = {
                         'video_id': item['id']['videoId'],
                         'title': item['snippet']['title'],
                         'published_at': item['snippet']['publishedAt'],
                         'channel_title': item['snippet']['channelTitle'],
-                        'description': item['snippet']['description'][:100] + '...' if len(item['snippet']['description']) > 100 else item['snippet']['description']
+                        'description': description[:100] + '...' if len(description) > 100 else description
                     }
                     videos.append(video_data)
                 

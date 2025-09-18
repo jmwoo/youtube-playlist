@@ -1,24 +1,23 @@
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 
-# Channel configurations by name
 CHANNELS = {
     'CNBC': {
         'name': 'CNBC',
-        'channel_id': 'UCrp_UI8XtuYfpiqluWLD7Lw',  # CNBC Television
+        'channel_id': 'UCrp_UI8XtuYfpiqluWLD7Lw',
         'handle': '@CNBCtelevision'
     }
     # Add more channels here as needed
 }
 
-# Category definitions - which channels belong to which categories
+# Category definitions - which channels belong to which categories, hours_back to adjust recency
 CATEGORIES = {
     'news': {
         'channels': ['CNBC'],
-        'hours_back': 6  # Only get videos from last 6 hours
+        'hours_back': 7 
     },
     'dev': {
         'channels': [],
-        'hours_back': 24  # Full day for dev content
+        'hours_back': 24
     }
 }
 
@@ -38,7 +37,6 @@ class DateConfig:
         
         # If hours_back is specified, use that instead of full day
         if self.hours_back:
-            from datetime import timedelta
             start_time = end_time - timedelta(hours=self.hours_back)
         else:
             # Default: from midnight of target date

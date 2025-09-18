@@ -7,6 +7,7 @@ Creates playlists from videos uploaded by specified channels within a date range
 import argparse
 import logging
 import sys
+import webbrowser
 from datetime import date, datetime
 from auth import get_authenticated_service
 from config import CHANNELS, CATEGORIES, DateConfig, PLAYLIST_CONFIG
@@ -77,12 +78,15 @@ def main():
             sys.exit(1)
         
         # Get channel configurations
-        channel_configs = []
-        for channel_name in category_channel_names:
-            if channel_name in CHANNELS:
-                channel_configs.append(CHANNELS[channel_name])
-            else:
-                logger.warning(f"Channel '{channel_name}' not found in CHANNELS config")
+        channel_configs = [
+            CHANNELS[name] for name in category_channel_names 
+            if name in CHANNELS
+        ]
+        
+        # Warn about missing channels
+        missing_channels = [name for name in category_channel_names if name not in CHANNELS]
+        for missing in missing_channels:
+            logger.warning(f"Channel '{missing}' not found in CHANNELS config")
         
         if not channel_configs:
             logger.error(f"No valid channels found for category: {args.category}")
@@ -119,6 +123,7 @@ def main():
         
         if not videos:
             logger.warning("No videos found for the specified criteria")
+            print("📭 No videos found matching your criteria")
             return
         
         logger.info(f"Found {len(videos)} total videos")
@@ -153,6 +158,7 @@ def main():
         
         if not playlist_id:
             logger.error("Failed to create or find playlist")
+            print("❌ Failed to create or find playlist")
             return
         
         if is_existing:
@@ -188,6 +194,14 @@ def main():
             print(f"\n❓ No videos added")
             
         print(f"🔗 {playlist_url}")
+        
+        # Open playlist in default browser
+        try:
+            webbrowser.open(playlist_url)
+            print("🌐 Opening playlist in your default browser...")
+        except Exception as e:
+            logger.debug(f"Could not open browser: {e}")
+            # Don't show error to user, they still have the URL
         
     except Exception as e:
         logger.error(f"An error occurred: {e}")

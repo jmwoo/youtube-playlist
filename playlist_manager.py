@@ -7,6 +7,11 @@ class PlaylistManager:
         self.youtube = youtube_service
         self.logger = logging.getLogger(__name__)
     
+    @staticmethod
+    def _get_playlist_url(playlist_id):
+        """Generate YouTube playlist URL"""
+        return f"https://www.youtube.com/playlist?list={playlist_id}"
+    
     def find_existing_playlist(self, title):
         """Find existing playlist by title"""
         try:
@@ -21,7 +26,7 @@ class PlaylistManager:
             for item in response['items']:
                 if item['snippet']['title'] == title:
                     playlist_id = item['id']
-                    playlist_url = f"https://www.youtube.com/playlist?list={playlist_id}"
+                    playlist_url = self._get_playlist_url(playlist_id)
                     self.logger.info(f"Found existing playlist: {title} (ID: {playlist_id})")
                     return playlist_id, playlist_url
             
@@ -81,7 +86,7 @@ class PlaylistManager:
             
             response = request.execute()
             playlist_id = response['id']
-            playlist_url = f"https://www.youtube.com/playlist?list={playlist_id}"
+            playlist_url = self._get_playlist_url(playlist_id)
             
             self.logger.info(f"Created playlist: {title} (ID: {playlist_id})")
             return playlist_id, playlist_url
