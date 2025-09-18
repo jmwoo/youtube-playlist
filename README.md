@@ -1,6 +1,7 @@
 # YouTube Playlist Creator
 
 Creates YouTube playlists from videos uploaded by specified channels within a date range.
+
 Great for consuming new content from your favorite channels during your daily routine.
 
 ## Setup
